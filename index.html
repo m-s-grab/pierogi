@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lista Pierogów</title>
+  <title>Only Winners Eat Pierogi</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -185,7 +185,7 @@
 
     // Listy nazw do kolorowania tła w kolumnie Nazwa
     const blueNames = [
-      "Z mięsem (with meat)",
+      "Z mięsem (With meat)",
       "Rycerskie (Knight's)",
       "Chłopskie (Peasant's)",
       "Z mięsem i kapustą (Cabbage&Meat)",
@@ -197,33 +197,38 @@
       "Z Łososiem i serem (Salmon&Cheese)"
     ];
     const greenNames = [
-      "Podkarpackie (\"srokate\") (Subcarpathian)",
+      "Podkarpackie \"srokate\" (Subcarpathian)",
       "Ruskie (Red Rus' style)",
-      "Góralskie",
+      "Góralskie (Mountain style)",
       "Z czosnkiem niedźwiedzim",
-      "Kakory z marchewką",
-      "Uszka z grzybami",
-      "Z suszonymi grzybami leśnymi",
+      "Kakory z marchewką (Carrots kakory)",
+      "Uszka z grzybami (pron. Ooshka)",
+      "Suszone grzyby leśne (Dried forest mushrooms)",
       "Po kurpiowsku (Kurpie style)",
-      "Z kapustą i grzybami",
-      "Kapusta, grzyby i śliwki",
-      "Z marchwią i prażonymi orzechami",
-      "Z kapustą",
-      "Marchew & Cebulka"
+      "Z kapustą i grzybami (Mushrooms&Cabbage)",
+      "Mieszanka Wiejska (Village Mix)",
+      "Z marchwią i prażonymi orzechami (Carrot&Roasted Nuts)",
+      "Z kapustą (CABBAGE!!11!)",
+      "Marchew & Cebulka (Carrot&Onion)",
+	  "Gryczano-grzybowe (Buckwheat&Mushrooms)"
     ];
     const yellowNames = [
-      "Ze śliwką wędzoną",
-      "Ze śliwką i orzechami",
+      "Ze śliwką wędzoną (Smoked Plum)",
+      "Ze śliwką i orzechami (Plums&Nuts)",
       "Z jagodami i białą czekoladą",
-      "Z truskawkami",
+      "Z truskawkami (With Strawberries)",
       "Z truskawkami i mleczną czekoladą",
-      "Z serem i truskawkami",
-      "Z serem słodkim",
-      "Z serem i jagodami",
-      "Z serem i orzechami",
+      "Z serem i truskawkami (Cheese&Strawberries)",
+      "Z serem słodkim (Classic sweet cheese)",
+      "Z serem i jagodami (Cheese&Blueberries)",
+      "Z serem i orzechami (Cheese&Nuts)",
       "Czekoladowo-orzechowe z kaszą",
-      "Z truskawkami i kaszą jaglaną",
-      "Owoce leśne"
+      "Z truskawkami i kaszą jaglaną (Strawberries&Millet groats)",
+      "Owoce leśne (Forest Fruits)",
+	  "Z serem i jagodami (Cheese&Blueberries)",
+	  "Pierogi z sadu (Orchard pierogi)",
+	  "Pierogi leniwe (\"Lazy dumplings\")",
+	  "Truskawka w cieście ziemniaczanym (Strawberry in potato dough)"
     ];
 
     // Dane pierogów: 
@@ -236,34 +241,34 @@ const pierogiData = [
   ["Zbójnickie (Ruffian's)", "Kapusta(Cabbage)", "Kasza(Groats)", "Mięso(Meat)", ["Wytrawny","Mięsny","Tradycyjny"], 7],
   ["Biesiadne (Festive)", "Śliwka(Plum)", "Kasza(Groats)", "Mięso(Meat)", ["Wytrawny","Mięsny","Tradycyjny"], 9],
   ["Dzyndzałki z hreczką (Masurian)", "Mięso(Meat)", "Kasza(Groats)", "Jajko(Egg)", ["Wytrawny","Mięsny","Tradycyjny","Premium"], 9],
-  ["Śląski przysmak (Silesian delicacy)", "Mięso(Meat)", "Śliwka(Plum)", "Ogień(Fire)", ["Wytrawny","Mięsny","Tradycyjny","Premium"], 9],
+  ["Śląski przysmak (Silesian delicacy)", "Mięso(Meat)", "Śliwka(Plum)", "Ogień(Fire)", ["Wytrawny","Mięsny","Nowoczesny","Premium"], 9],
   ["Z Łososiem wędzonym (Smoked salmon)", "Łosoś(Salmon)", "Czosnek(Garlic)", "Ogień(Fire)", ["Wytrawny","Mięsny","Nowoczesny","Premium"], 9],
   ["Z Łososiem i serem (Salmon&Cheese)", "Łosoś(Salmon)", "Twaróg(Quark)", "Cebula(Onion)", ["Wytrawny","Mięsny","Nowoczesny","Premium"], 9],
   ["Podkarpackie \"srokate\" (Subcarpathian)", "Kapusta(Cabbage)", "Twaróg(Quark)", "Jajko(Egg)", ["Wytrawny","Jarski","Tradycyjny"], 5],
   ["Uszka z grzybami (pron. Ooshka)", "Grzyby(Mushrooms)", "Jajko(Egg)", "Cebula(Onion)", ["Wytrawny","Jarski","Tradycyjny"], 7],
   ["Po kurpiowsku (Kurpie style)", "Grzyby(Mushrooms)", "Orzechy(Nuts)", "Jajko(Egg)", ["Wytrawny","Jarski","Tradycyjny","Premium"], 9],
-  ["Z kapustą i grzybami (Mushrooms&Cabbage)", "Grzyby(Mushrooms)", "Czosnek(Garlic)", "Kapusta(Cabbage)", ["Wytrawny","Jarski","Tradycyjny"], 5],
-  ["Mieszanka Wiejska (Village Mix)", "Grzyby(Mushrooms)", "Śliwka(Plum)", "Kapusta(Cabbage)", ["puste"], 7],
-  ["Suszone grzyby leśne (Dried forest mushrooms)", "Grzyby(Mushrooms)", "Cebula(Onion)", "Ogień(Fire)", ["Wytrawny","Jarski","Tradycyjny","Premium"], 7],
-  ["Gryczano-grzybowe (Buckwheat&Mushrooms)", "Grzyby(Mushrooms)", "Kasza(Groats)", "Ogień(Fire)", ["puste"], 7],
-  ["Z marchwią i prażonymi orzechami (Carrot&Roasted Nuts)", "Marchew(Carrot)", "Orzechy(Nuts)", "Ogień(Fire)", ["Wytrawny","Jarski","Nowoczesny"], 5],
-  ["Z kapustą (CABBAGE!!11!)", "Marchew(Carrot)", "Czosnek(Garlic)", "Kapusta(Cabbage)", ["Wytrawny","Jarski","Tradycyjny"], 7],
-  ["Marchew & Cebulka (Carrot&Onion)", "Marchew(Carrot)", "Cebula(Onion)", "Śmietana(Cream)", ["Wytrawny","Jarski","Tradycyjny"], 5],
-  ["Kakory z marchewką (Carrots kakory)", "Marchew(Carrot)", "Ziemniaki(Potatoes)", "Cebula(Onion)", ["Wytrawny","Jarski","Tradycyjny"], 5],
+  ["Z kapustą i grzybami (Mushrooms&Cabbage)", "Grzyby(Mushrooms)", "Czosnek(Garlic)", "Kapusta(Cabbage)", ["Wytrawny","Wege","Tradycyjny"], 5],
+  ["Mieszanka Wiejska (Village Mix)", "Grzyby(Mushrooms)", "Śliwka(Plum)", "Kapusta(Cabbage)", ["Wytrawny","Wege","Nowoczesny"], 7],
+  ["Suszone grzyby leśne (Dried forest mushrooms)", "Grzyby(Mushrooms)", "Cebula(Onion)", "Ogień(Fire)", ["Wytrawny","Wege","Tradycyjny","Premium"], 7],
+  ["Gryczano-grzybowe (Buckwheat&Mushrooms)", "Grzyby(Mushrooms)", "Kasza(Groats)", "Ogień(Fire)", ["Wytrawny","Wege","Tradycyjny"], 7],
+  ["Z marchwią i prażonymi orzechami (Carrot&Roasted Nuts)", "Marchew(Carrot)", "Orzechy(Nuts)", "Ogień(Fire)", ["Wytrawny","Wege","Nowoczesny"], 5],
+  ["Z kapustą (CABBAGE!!11!)", "Marchew(Carrot)", "Czosnek(Garlic)", "Kapusta(Cabbage)", ["Wytrawny","Wege","Tradycyjny"], 7],
+  ["Marchew & Cebulka (Carrot&Onion)", "Marchew(Carrot)", "Cebula(Onion)", "Śmietana(Cream)", ["Wytrawny","Wege","Tradycyjny"], 5],
+  ["Kakory z marchewką (Carrots kakory)", "Marchew(Carrot)", "Ziemniaki(Potatoes)", "Cebula(Onion)", ["Wytrawny","Wege","Nowoczesny"], 5],
   ["Ruskie (Red Rus' style)", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Cebula(Onion)", ["Wytrawny","Jarski","Tradycyjny"], 5],
   ["Góralskie (Mountain style)", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Ogień(Fire)", ["Wytrawny","Jarski","Nowoczesny","Premium"], 7],
-  ["Pierogi leniwe (\"Lazy dumplings\")", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Cukier(Sugar)", ["puste"], 5],
-  ["Truskawka w cieście ziemniaczanym (Strawberry in potato dough)", "Truskawki(Strawberries)", "Ziemniaki(Potatoes)", "Cukier(Sugar)", ["puste"], 5],
-  ["Z truskawkami (With Strawberries)", "Truskawki(Strawberries)", "Śmietana(Cream)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 5],
-  ["Z serem i truskawkami (Cheese&Strawberries)", "Truskawki(Strawberries)", "Twaróg(Quark)", "Cukier(Sugar)", ["Słodki","Jarski","Tradycyjny"], 7],
+  ["Pierogi leniwe (\"Lazy dumplings\")", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Cukier(Sugar)", ["Słodki","Jarski","Tradycyjny"], 5],
+  ["Truskawka w cieście ziemniaczanym (Strawberry in potato dough)", "Truskawki(Strawberries)", "Ziemniaki(Potatoes)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 5],
+  ["Z truskawkami (With Strawberries)", "Truskawki(Strawberries)", "Śmietana(Cream)", "Cukier(Sugar)", ["Słodki","Wege","Tradycyjny"], 5],
+  ["Z serem i truskawkami (Cheese&Strawberries)", "Truskawki(Strawberries)", "Twaróg(Quark)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 7],
   ["Z truskawkami i kaszą jaglaną (Strawberries&Millet groats)", "Truskawki(Strawberries)", "Kasza(Groats)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 5],
-  ["Pierogi z sadu (Orchard pierogi)", "Truskawki(Strawberries)", "Śliwka(Plum)", "Cukier(Sugar)", ["puste"], 9],
+  ["Pierogi z sadu (Orchard pierogi)", "Truskawki(Strawberries)", "Śliwka(Plum)", "Cukier(Sugar)", ["Słodki","Wege","Nowoczesny"], 9],
   ["Owoce leśne (Forest Fruits)", "Truskawki(Strawberries)", "Jagody(Blueberries)", "Śmietana(Cream)", ["Słodki","Jarski","Nowoczesny","Premium"], 9],
-  ["Ze śliwką wędzoną (Smoked Plum)", "Śliwka(Plum)", "Śmietana(Cream)", "Ogień(Fire)", ["Wytrawny","Jarski","Nowoczesny"], 7],
-  ["Ze śliwką i orzechami (Plums&Nuts)", "Śliwka(Plum)", "Orzechy(Nuts)", "Śmietana(Cream)", ["Słodki","Jarski","Tradycyjny","Premium"], 7],
-  ["Z serem i orzechami (Cheese&Nuts)", "Twaróg(Quark)", "Orzechy(Nuts)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 7],
+  ["Ze śliwką wędzoną (Smoked Plum)", "Śliwka(Plum)", "Śmietana(Cream)", "Ogień(Fire)", ["Słodki","Wege","Tradycyjny"], 7],
+  ["Ze śliwką i orzechami (Plums&Nuts)", "Śliwka(Plum)", "Orzechy(Nuts)", "Śmietana(Cream)", ["Słodki","Wege","Tradycyjny","Premium"], 7],
+  ["Z serem i orzechami (Cheese&Nuts)", "Twaróg(Quark)", "Orzechy(Nuts)", "Cukier(Sugar)", ["Słodki","Jarski","Tradycyjny"], 7],
   ["Z serem słodkim (Classic sweet cheese)", "Twaróg(Quark)", "Jajko(Egg)", "Cukier(Sugar)", ["Słodki","Jarski","Tradycyjny"], 5],
-  ["Z serem i jagodami (Cheese&Blueberries)", "Twaróg(Quark)", "Jajko(Egg)", "Jagody(Blueberries)", ["Słodki","Jarski","Tradycyjny"], 9]
+  ["Z serem i jagodami (Cheese&Blueberries)", "Twaróg(Quark)", "Jajko(Egg)", "Jagody(Blueberries)", ["Słodki","Jarski","Nowoczesny"], 9]
 ];
     // Funkcja renderująca tabelę pierogów
     function renderPierogiTable(filteredPierogi) {
@@ -278,9 +283,9 @@ const pierogiData = [
         const tdName = document.createElement('td');
         tdName.textContent = pierog[0];
         if (blueNames.includes(pierog[0])) {
-          tdName.style.backgroundColor = '#cce5ff';
+          tdName.style.backgroundColor = '#b7cee5';
         } else if (greenNames.includes(pierog[0])) {
-          tdName.style.backgroundColor = '#d4edda';
+          tdName.style.backgroundColor = '#64b372';
         } else if (yellowNames.includes(pierog[0])) {
           tdName.style.backgroundColor = '#f0c36d';
         }
