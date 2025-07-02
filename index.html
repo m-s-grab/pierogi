@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Only Winners Eat Pierogi</title>
   <style>
+	  /* Ikony tylko w tabeli rozwijanej */
+#pierogi-table img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 5px;
+}
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -348,9 +356,9 @@ const pierogiData = [
       const selectContainer = document.getElementById(selectId + 'Container');
       const selectItems = document.getElementById(selectId + 'Items');
       const options = [
-        "Mięso", "Cebula", "Marchew", "Ziemniaki", "Kapusta", "Kasza", 
-        "Jajko", "Śliwki", "Grzyby", "Czosnek", "Orzechy", "Czekolada", 
-        "Jagody", "Łosoś", "Ogień", "Twaróg", "Cukier", "Truskawki", "Śmietana"
+        "Mięso(Meat)", "Cebula(Onion)", "Marchew(Carrot)", "Ziemniaki(Potatoes)", "Kapusta(Cabbage)", "Kasza(Groats)", 
+        "Jajko(Egg)", "Śliwka(Plum)", "Grzyby(Mushrooms)", "Czosnek(Garlic)", "Orzechy(Nuts)", 
+        "Jagody(Blueberries)", "Łosoś(Salmon)", "Ogień(Fire)", "Twaróg(Quark)", "Cukier(Sugar)", "Truskawki(Strawberries)", "Śmietana(Cream)"
       ];
 
       options.forEach(option => {
