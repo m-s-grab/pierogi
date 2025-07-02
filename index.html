@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista Pierogów</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
+    nav button {
+      padding: 10px 15px;
+      margin-right: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 5px 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    td img {
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+	
+	img[src*="Twaróg.svg"] {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+
+    .filter-section {
+      margin-top: 20px;
+    }
+    .custom-select {
+      position: relative;
+      display: inline-block;
+      width: 200px;
+    }
+    .custom-select select {
+      display: none;
+    }
+    .select-box {
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      background-color: white;
+      display: flex;
+      align-items: center;
+    }
+    .select-box img {
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+    }
+    /* Animacja rozwijanej listy: max-height */
+    .select-items {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ddd;
+      z-index: 1;
+      width: 100%;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.1s ease-out;
+    }
+    .select-items.show {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .select-items div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .select-items div:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lista Pierogów</h1>
+  <nav>
+    <button onclick="showAll()">Wszystkie/All</button>
+    <button onclick="showFiltered()">Filtruj/Filter</button>
+  </nav>
+
+  <!-- Sekcja filtrowania -->
+  <div class="filter-section" id="filterSection" style="display: none;">
+    <label for="ingredientSelect1">Wybierz 1szy składnik / Select 1st ingredient:</label>
+    <div class="custom-select" id="ingredientSelect1Container">
+      <div class="select-box" id="ingredientSelect1Box">
+        <img src="Ikony/Pieróg.svg" id="ingredientSelect1Icon" alt="Pieróg" />
+        <span id="ingredientSelect1Label">Składnik/Ingredient</span>
+      </div>
+      <div class="select-items" id="ingredientSelect1Items">
+        <!-- Opcje będą dodawane dynamicznie -->
+      </div>
+    </div>
+
+    <label for="ingredientSelect2">Wybierz 2gi składnik / Select 2nd ingredient:</label>
+    <div class="custom-select" id="ingredientSelect2Container">
+      <div class="select-box" id="ingredientSelect2Box">
+        <img src="Ikony/Pieróg.svg" id="ingredientSelect2Icon" alt="Pieróg" />
+        <span id="ingredientSelect2Label">Składnik/Ingredient</span>
+      </div>
+      <div class="select-items" id="ingredientSelect2Items">
+        <!-- Opcje będą dodawane dynamicznie -->
+      </div>
+    </div>
+
+    <button onclick="filterByIngredients()">Szukaj</button>
+    <button onclick="resetSelections()">Reset</button>
+  </div>
+
+  <!-- Tabela z pierogami -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa/Name</th>
+        <th>Baza/Base</th>
+        <th>Faktura/Fabric</th>
+        <th>Akcent/Accent</th>
+        <th>Info</th>
+        <th>Cena/Price</th>
+      </tr>
+    </thead>
+    <tbody id="pierogiTable"></tbody>
+  </table>
+
+  <script>
+    // Ikony składników (używane dalej przy wyświetlaniu składników)
+    const icons = {
+      "Mięso(Meat)": "Ikony/Mięso.svg",
+      "Cebula(Onion)": "Ikony/Cebula.svg",
+      "Marchew(Carrot)": "Ikony/Marchew2.svg",
+      "Ziemniaki(Potatoes)": "Ikony/Ziemniaki2.svg",
+      "Kapusta(Cabbage)": "Ikony/Kapusta2.svg",
+      "Kasza(Groats)": "Ikony/Kasza.svg",
+      "Jajko(Egg)": "Ikony/Jajko2.svg",
+      "Śliwka(Plum)": "Ikony/Śliwka.svg",
+      "Grzyby(Mushrooms)": "Ikony/Grzyby.svg",
+      "Czosnek(Garlic)": "Ikony/Czosnek2.svg",
+      "Orzechy(Nuts)": "Ikony/Orzechy.svg",
+      "Czekolada(Chocolate)": "Ikony/Czekolada.svg",
+      "Jagody(Blueberries)": "Ikony/Jagody.svg",
+      "Łosoś(Salmon)": "Ikony/Łosoś.svg",
+      "Ogień(Fire)": "Ikony/Ogień.svg",
+      "Twaróg(Quark)": "Ikony/Twaróg2.svg",
+      "Cukier(Sugar)": "Ikony/Cukier2.svg",
+      "Truskawki(Strawberries)": "Ikony/Truskawki.svg",
+      "Śmietana(Cream)": "Ikony/Śmietana.svg",
+      "Pieróg": "Ikony/Pieróg.svg"
+    };
+
+    // Mapping tekstowych symboli dla cech dodatkowych
+    const categorySymbols = {
+      "Wytrawny": "🍴",    // symbol sztućców
+      "Słodki": "🍬",      // symbol cukierka
+      "Mięsny": "🍗",      // symbol udźca
+      "Jarski": "🍃",      // symbol liścia
+      "Wege": "🌸",    // symbol fioletowego kwiatu
+      "Tradycyjny": "👗",  // symbol sukienki
+      "Nowoczesny": "📱",  // symbol telefonu
+      "Premium": "⭐"      // symbol gwiazdki
+    };
+
+    // Listy nazw do kolorowania tła w kolumnie Nazwa
+    const blueNames = [
+      "Z mięsem (with meat)",
+      "Rycerskie (Knight's)",
+      "Chłopskie (Peasant's)",
+      "Z mięsem i kapustą (Cabbage&Meat)",
+      "Zbójnickie (Ruffian's)",
+      "Dzyndzałki z hreczką (Masurian)",
+      "Biesiadne (Festive)",
+      "Śląski przysmak (Silesian delicacy)",
+      "Z Łososiem wędzonym (Smoked salmon)",
+      "Z Łososiem i serem (Salmon&Cheese)"
+    ];
+    const greenNames = [
+      "Podkarpackie (\"srokate\") (Subcarpathian)",
+      "Ruskie (Red Rus' style)",
+      "Góralskie",
+      "Z czosnkiem niedźwiedzim",
+      "Kakory z marchewką",
+      "Uszka z grzybami",
+      "Z suszonymi grzybami leśnymi",
+      "Po kurpiowsku (Kurpie style)",
+      "Z kapustą i grzybami",
+      "Kapusta, grzyby i śliwki",
+      "Z marchwią i prażonymi orzechami",
+      "Z kapustą",
+      "Marchew & Cebulka"
+    ];
+    const yellowNames = [
+      "Ze śliwką wędzoną",
+      "Ze śliwką i orzechami",
+      "Z jagodami i białą czekoladą",
+      "Z truskawkami",
+      "Z truskawkami i mleczną czekoladą",
+      "Z serem i truskawkami",
+      "Z serem słodkim",
+      "Z serem i jagodami",
+      "Z serem i orzechami",
+      "Czekoladowo-orzechowe z kaszą",
+      "Z truskawkami i kaszą jaglaną",
+      "Owoce leśne"
+    ];
+
+    // Dane pierogów: 
+    // [Nazwa/Name, Baza/Base, Faktura/Fabric, Akcent/Accent, [Info], Cena/Price]
+const pierogiData = [
+  ["Z mięsem (With meat)", "Mięso(Meat)", "Czosnek(Garlic)", "Cebula(Onion)", ["Wytrawny","Mięsny","Tradycyjny"], 7],
+  ["Chłopskie (Peasant's)", "Mięso(Meat)", "Ziemniaki(Potatoes)", "Cebula(Onion)", ["Wytrawny","Mięsny","Tradycyjny"], 7],
+  ["Rycerskie (Knight's)", "Marchew(Carrot)", "Mięso(Meat)", "Cebula(Onion)", ["Wytrawny","Mięsny","Tradycyjny"], 7],
+  ["Z mięsem i kapustą (Cabbage&Meat)", "Kapusta(Cabbage)", "Mięso(Meat)", "Cebula(Onion)", ["Wytrawny","Mięsny","Tradycyjny"], 7],
+  ["Zbójnickie (Ruffian's)", "Kapusta(Cabbage)", "Kasza(Groats)", "Mięso(Meat)", ["Wytrawny","Mięsny","Tradycyjny"], 7],
+  ["Biesiadne (Festive)", "Śliwka(Plum)", "Kasza(Groats)", "Mięso(Meat)", ["Wytrawny","Mięsny","Tradycyjny"], 9],
+  ["Dzyndzałki z hreczką (Masurian)", "Mięso(Meat)", "Kasza(Groats)", "Jajko(Egg)", ["Wytrawny","Mięsny","Tradycyjny","Premium"], 9],
+  ["Śląski przysmak (Silesian delicacy)", "Mięso(Meat)", "Śliwka(Plum)", "Ogień(Fire)", ["Wytrawny","Mięsny","Tradycyjny","Premium"], 9],
+  ["Z Łososiem wędzonym (Smoked salmon)", "Łosoś(Salmon)", "Czosnek(Garlic)", "Ogień(Fire)", ["Wytrawny","Mięsny","Nowoczesny","Premium"], 9],
+  ["Z Łososiem i serem (Salmon&Cheese)", "Łosoś(Salmon)", "Twaróg(Quark)", "Cebula(Onion)", ["Wytrawny","Mięsny","Nowoczesny","Premium"], 9],
+  ["Podkarpackie \"srokate\" (Subcarpathian)", "Kapusta(Cabbage)", "Twaróg(Quark)", "Jajko(Egg)", ["Wytrawny","Jarski","Tradycyjny"], 5],
+  ["Uszka z grzybami (pron. Ooshka)", "Grzyby(Mushrooms)", "Jajko(Egg)", "Cebula(Onion)", ["Wytrawny","Jarski","Tradycyjny"], 7],
+  ["Po kurpiowsku (Kurpie style)", "Grzyby(Mushrooms)", "Orzechy(Nuts)", "Jajko(Egg)", ["Wytrawny","Jarski","Tradycyjny","Premium"], 9],
+  ["Z kapustą i grzybami (Mushrooms&Cabbage)", "Grzyby(Mushrooms)", "Czosnek(Garlic)", "Kapusta(Cabbage)", ["Wytrawny","Jarski","Tradycyjny"], 5],
+  ["Mieszanka Wiejska (Village Mix)", "Grzyby(Mushrooms)", "Śliwka(Plum)", "Kapusta(Cabbage)", ["puste"], 7],
+  ["Suszone grzyby leśne (Dried forest mushrooms)", "Grzyby(Mushrooms)", "Cebula(Onion)", "Ogień(Fire)", ["Wytrawny","Jarski","Tradycyjny","Premium"], 7],
+  ["Gryczano-grzybowe (Buckwheat&Mushrooms)", "Grzyby(Mushrooms)", "Kasza(Groats)", "Ogień(Fire)", ["puste"], 7],
+  ["Z marchwią i prażonymi orzechami (Carrot&Roasted Nuts)", "Marchew(Carrot)", "Orzechy(Nuts)", "Ogień(Fire)", ["Wytrawny","Jarski","Nowoczesny"], 5],
+  ["Z kapustą (CABBAGE!!11!)", "Marchew(Carrot)", "Czosnek(Garlic)", "Kapusta(Cabbage)", ["Wytrawny","Jarski","Tradycyjny"], 7],
+  ["Marchew & Cebulka (Carrot&Onion)", "Marchew(Carrot)", "Cebula(Onion)", "Śmietana(Cream)", ["Wytrawny","Jarski","Tradycyjny"], 5],
+  ["Kakory z marchewką (Carrots kakory)", "Marchew(Carrot)", "Ziemniaki(Potatoes)", "Cebula(Onion)", ["Wytrawny","Jarski","Tradycyjny"], 5],
+  ["Ruskie (Red Rus' style)", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Cebula(Onion)", ["Wytrawny","Jarski","Tradycyjny"], 5],
+  ["Góralskie (Mountain style)", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Ogień(Fire)", ["Wytrawny","Jarski","Nowoczesny","Premium"], 7],
+  ["Pierogi leniwe (\"Lazy dumplings\")", "Twaróg(Quark)", "Ziemniaki(Potatoes)", "Cukier(Sugar)", ["puste"], 5],
+  ["Truskawka w cieście ziemniaczanym (Strawberry in potato dough)", "Truskawki(Strawberries)", "Ziemniaki(Potatoes)", "Cukier(Sugar)", ["puste"], 5],
+  ["Z truskawkami (With Strawberries)", "Truskawki(Strawberries)", "Śmietana(Cream)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 5],
+  ["Z serem i truskawkami (Cheese&Strawberries)", "Truskawki(Strawberries)", "Twaróg(Quark)", "Cukier(Sugar)", ["Słodki","Jarski","Tradycyjny"], 7],
+  ["Z truskawkami i kaszą jaglaną (Strawberries&Millet groats)", "Truskawki(Strawberries)", "Kasza(Groats)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 5],
+  ["Pierogi z sadu (Orchard pierogi)", "Truskawki(Strawberries)", "Śliwka(Plum)", "Cukier(Sugar)", ["puste"], 9],
+  ["Owoce leśne (Forest Fruits)", "Truskawki(Strawberries)", "Jagody(Blueberries)", "Śmietana(Cream)", ["Słodki","Jarski","Nowoczesny","Premium"], 9],
+  ["Ze śliwką wędzoną (Smoked Plum)", "Śliwka(Plum)", "Śmietana(Cream)", "Ogień(Fire)", ["Wytrawny","Jarski","Nowoczesny"], 7],
+  ["Ze śliwką i orzechami (Plums&Nuts)", "Śliwka(Plum)", "Orzechy(Nuts)", "Śmietana(Cream)", ["Słodki","Jarski","Tradycyjny","Premium"], 7],
+  ["Z serem i orzechami (Cheese&Nuts)", "Twaróg(Quark)", "Orzechy(Nuts)", "Cukier(Sugar)", ["Słodki","Jarski","Nowoczesny"], 7],
+  ["Z serem słodkim (Classic sweet cheese)", "Twaróg(Quark)", "Jajko(Egg)", "Cukier(Sugar)", ["Słodki","Jarski","Tradycyjny"], 5],
+  ["Z serem i jagodami (Cheese&Blueberries)", "Twaróg(Quark)", "Jajko(Egg)", "Jagody(Blueberries)", ["Słodki","Jarski","Tradycyjny"], 9]
+];
+    // Funkcja renderująca tabelę pierogów
+    function renderPierogiTable(filteredPierogi) {
+      const pierogiTable = document.getElementById('pierogiTable');
+      pierogiTable.innerHTML = ''; // Reset tabeli
+
+      filteredPierogi.forEach(pierog => {
+        // pierog = [nazwa, skł1, skł2, skł3, [cechy], cena]
+        const row = document.createElement('tr');
+
+        // Nazwa + kolor tła
+        const tdName = document.createElement('td');
+        tdName.textContent = pierog[0];
+        if (blueNames.includes(pierog[0])) {
+          tdName.style.backgroundColor = '#cce5ff';
+        } else if (greenNames.includes(pierog[0])) {
+          tdName.style.backgroundColor = '#d4edda';
+        } else if (yellowNames.includes(pierog[0])) {
+          tdName.style.backgroundColor = '#f0c36d';
+        }
+        row.appendChild(tdName);
+
+        // Składniki (kolumny 2-4)
+        for (let i = 1; i <= 3; i++) {
+          const td = document.createElement('td');
+          const ingr = pierog[i];
+          td.innerHTML = `<img src="${icons[ingr]}" alt="${ingr}" />${ingr}`;
+          row.appendChild(td);
+        }
+
+        // Dodatkowe cechy – używamy tekstowych symboli
+        const tdExtras = document.createElement('td');
+        const extras = pierog[4]; // np. ["Wytrawny","Mięsny","Tradycyjny"]
+        const extrasHTML = extras.map(attr => {
+          const symbol = categorySymbols[attr] || "";
+          return `<span title="${attr}" style="margin-right:3px; font-size:18px;">${symbol}</span>`;
+        }).join('');
+        tdExtras.innerHTML = extrasHTML;
+        row.appendChild(tdExtras);
+
+        // Cena
+        const tdPrice = document.createElement('td');
+        tdPrice.textContent = pierog[5];
+        row.appendChild(tdPrice);
+
+        pierogiTable.appendChild(row);
+      });
+    }
+
+    // Filtrowanie po składnikach (pierwsze 4 pola: nazwa + 3 składniki)
+    function filterByIngredients() {
+      const selectedIngredient1 = document.getElementById('ingredientSelect1Label').textContent;
+      const selectedIngredient2 = document.getElementById('ingredientSelect2Label').textContent;
+
+      if (
+        selectedIngredient1 !== "Wybierz składnik" &&
+        selectedIngredient2 !== "Wybierz składnik" &&
+        selectedIngredient1 === selectedIngredient2
+      ) {
+        alert("Wybierz dwa różne składniki.");
+        return;
+      }
+
+      const filtered = pierogiData.filter(pierog => {
+        const ingrList = pierog.slice(0, 4);
+        return (
+          (selectedIngredient1 === "Wybierz składnik" || ingrList.includes(selectedIngredient1)) &&
+          (selectedIngredient2 === "Wybierz składnik" || ingrList.includes(selectedIngredient2))
+        );
+      });
+
+      renderPierogiTable(filtered);
+    }
+
+    // Dodawanie opcji do list rozwijanych
+    function addSelectOptions(selectId) {
+      const selectContainer = document.getElementById(selectId + 'Container');
+      const selectItems = document.getElementById(selectId + 'Items');
+      const options = [
+        "Mięso", "Cebula", "Marchew", "Ziemniaki", "Kapusta", "Kasza", 
+        "Jajko", "Śliwki", "Grzyby", "Czosnek", "Orzechy", "Czekolada", 
+        "Jagody", "Łosoś", "Ogień", "Twaróg", "Cukier", "Truskawki", "Śmietana"
+      ];
+
+      options.forEach(option => {
+        const item = document.createElement('div');
+        item.innerHTML = `<img src="${icons[option]}" alt="${option}" /> ${option}`;
+        item.onclick = (event) => {
+          event.stopPropagation();
+          document.getElementById(selectId + 'Label').textContent = option;
+          document.getElementById(selectId + 'Icon').src = icons[option] || icons["Pieróg"];
+          selectItems.classList.remove('show');
+        };
+        selectItems.appendChild(item);
+      });
+
+      const selectBox = document.getElementById(selectId + 'Box');
+      selectBox.addEventListener('click', function(event) {
+        event.stopPropagation();
+        document.querySelectorAll('.select-items.show').forEach(el => {
+          if (el !== selectItems) {
+            el.classList.remove('show');
+          }
+        });
+        if (selectItems.classList.contains('show')) {
+          selectItems.classList.remove('show');
+        } else {
+          selectItems.classList.add('show');
+        }
+      });
+    }
+
+    // Zamykanie dropdownów przy kliknięciu poza nimi
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.select-items.show').forEach(el => {
+        el.classList.remove('show');
+      });
+    });
+
+    // Reset wyboru składników
+    function resetSelections() {
+      document.getElementById('ingredientSelect1Label').textContent = 'Wybierz składnik';
+      document.getElementById('ingredientSelect1Icon').src = icons["Pieróg"];
+      document.getElementById('ingredientSelect2Label').textContent = 'Wybierz składnik';
+      document.getElementById('ingredientSelect2Icon').src = icons["Pieróg"];
+      renderPierogiTable(pierogiData);
+    }
+
+    // Funkcje pokazywania sekcji
+    function showAll() {
+      document.getElementById('filterSection').style.display = 'none';
+      renderPierogiTable(pierogiData);
+    }
+    function showFiltered() {
+      document.getElementById('filterSection').style.display = 'block';
+    }
+
+    // Inicjalizacja
+    addSelectOptions('ingredientSelect1');
+    addSelectOptions('ingredientSelect2');
+    renderPierogiTable(pierogiData);
+  </script>
+</body>
+</html>
